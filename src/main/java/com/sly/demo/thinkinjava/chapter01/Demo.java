@@ -1,4 +1,4 @@
-package com.sly.demo.thinkinjava;
+package com.sly.demo.thinkinjava.chapter01;
 
 /**
  * 
