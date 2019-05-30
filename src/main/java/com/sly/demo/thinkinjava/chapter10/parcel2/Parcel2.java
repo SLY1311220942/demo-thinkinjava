@@ -44,5 +44,8 @@ public class Parcel2 {
 	public static void main(String[] args) {
 		Parcel2 parcel2 = new Parcel2();
 		parcel2.ship("木星");
+		
+		Destination destination = parcel2.to("土星");
+		System.out.println(destination.readLabel());
 	}
 }
