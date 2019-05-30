@@ -223,14 +223,402 @@ public class DotThis {
 }
 ```
 
+```java
+/**
+ * .new
+ * @author sly
+ * @time 2019年5月28日
+ */
+public class DotNew {
+    public class Inner {
+        public Inner() {
+            System.out.println("new inner");
+        }
+    }
+
+    public static void main(String[] args) {
+        DotNew dotNew = new DotNew();
+        Inner inner = dotNew.new Inner();
+    }
+}
+```
+
+```java
+/**
+ * .new在parcel上的应用
+ * 
+ * @author sly
+ * @time 2019年5月28日
+ */
+public class Parcel3 {
+    class Contents {
+        private int i = 11;
+
+        public int value() {
+            return i;
+        }
+    }
+
+    class Destination {
+        private String label;
+
+        public Destination(String whereTo) {
+            this.label = whereTo;
+        }
+
+        String readLabel() {
+            return label;
+        }
+    }
+
+    public static void main(String[] args) {
+        Parcel3 parcel3 = new Parcel3();
+        Parcel3.Contents contents = parcel3.new Contents();
+        Parcel3.Destination destination = parcel3.new Destination("水星");
+        System.out.println(contents.value() + ":" + destination.readLabel());
+    }
+}
+```
+
 ## 10.4 内部类向上转型
-> 
+> 当将内部类向上转型为其基类，尤其是转型为一个接口的时候，内部类就有了用武之地。这是因为此内部类--某个接口的实现--能够完全看不可见，并且不可用。所得到的只是指向基类或接口的引用，所以能够很方便地隐藏实现细节。
+
+```java
+/**
+ * 
+ * @author sly
+ * @time 2019年5月28日
+ */
+public interface Contents {
+    int value();
+}
+
+/**
+ * 
+ * @author sly
+ * @time 2019年5月28日
+ */
+public interface Destination {
+    String readLabel();
+}
+
+/**
+ * 
+ * @author sly
+ * @time 2019年5月28日
+ */
+public class Parcel4 {
+    private class PContents implements Contents {
+        private int i = 11;
+
+        @Override
+        public int value() {
+            return i;
+        }
+
+    }
+
+    protected class PDestination implements Destination {
+        private String label;
+
+        private PDestination(String dest) {
+            label = dest;
+        }
+
+        @Override
+        public String readLabel() {
+            return label;
+        }
+    }
+
+    public Contents contents() {
+        return new PContents();
+    }
+
+    public Destination destination(String dest) {
+        return new PDestination(dest);
+    }
+}
+```
 
 ## 10.5 在方法和作用域内的内部类
-> 
+> 一个定义在方法中的类。
+
+```java
+import com.sly.demo.thinkinjava.chapter10.parcel4.Destination;
+
+/**
+ * 一个定义在方法中的类
+ * 
+ * @author sly
+ * @time 2019年5月28日
+ */
+public class Parcel5 {
+
+    public Destination destination(String dest) {
+        class PDestination implements Destination {
+            private String label;
+
+            private PDestination(String dest) {
+                label = dest;
+            }
+
+            @Override
+            public String readLabel() {
+                return label;
+            }
+        }
+        
+        return new PDestination(dest);
+    }
+    
+    public static void main(String[] args) {
+        Parcel5 parcel5 = new Parcel5();
+        Destination destination = parcel5.destination("土星");
+        System.out.println(destination.readLabel());
+    }
+}
+```
+
+> 一个定义在作用域内的类，此作用域的方法的内部。
+
+```java
+/**
+ * 一个定义在作用域内的类，此作用域在方法的内部
+ * 
+ * @author sly
+ * @time 2019年5月28日
+ */
+public class Parcel6 {
+    
+    private void internalTracking(boolean b) {
+        if(b) {
+            class TrackingShip{
+                private String id;
+                TrackingShip(String s){
+                    id = s;
+                }
+                String getShip() {
+                    return id;
+                }
+            }
+            TrackingShip ship = new TrackingShip("ship");
+            String s = ship.getShip();
+            System.out.println(s);
+        }
+    }
+    
+    public void track() {
+        internalTracking(true);
+    }
+    
+    public static void main(String[] args) {
+        Parcel6 parcel6 = new Parcel6();
+        parcel6.track();
+    }
+}
+```
 
 ## 10.6 匿名内部类
-> 
+> 一个实现了接口的匿名类。
+
+```java
+/**
+ * 一个实现了接口的匿名类
+ * 
+ * @author sly
+ * @time 2019年5月28日
+ */
+public class Parcel7 {
+    public Contents contents() {
+        return new Contents(){
+            private int i = 15;
+
+            @Override
+            public int value() {
+                return i;
+            }
+        };
+    }
+    
+    public static void main(String[] args) {
+        Parcel7 parcel7 = new Parcel7();
+        Contents contents = parcel7.contents();
+        System.out.println(contents.value());
+    }
+}
+
+/**
+ * 创建一个继承自接口的匿名类对象
+ * @author sly
+ * @time 2019年5月28日
+ */
+public class Parcel7b {
+    class PContents implements Contents {
+        private int i = 16;
+
+        @Override
+        public int value() {
+            return i;
+        }
+    }
+
+    public Contents contents() {
+        return new PContents();
+    }
+
+    public static void main(String[] args) {
+        Parcel7b parcel7b = new Parcel7b();
+        Contents contents = parcel7b.contents();
+        System.out.println(contents.value());
+    }
+}
+```
+
+> 一个匿名类，它扩展了有非默认构造器的类。
+
+```java
+/**
+ * 
+ * @author sly
+ * @time 2019年5月28日
+ */
+public class Wapping {
+    private int x;
+    
+    public Wapping(int x) {
+        this.x = x;
+    }
+    
+    public int value() {
+        return x;
+    }
+}
+
+/**
+ * 一个匿名类，它扩展了有非默认构造器的类
+ * 
+ * @author sly
+ * @time 2019年5月28日
+ */
+public class Parcel8 {
+    
+    /**
+     * Wapping只是具有具体实现的普通类，但它还是被其导出类当作公共“接口”使用
+     * @param x
+     * @return
+     * @author sly
+     * @time 2019年5月28日
+     */
+    public Wapping wapping(int x) {
+        return new Wapping(x) {
+            @Override
+            public int value() {
+                return super.value() * 47;
+            }
+        };
+    }
+    
+    public static void main(String[] args) {
+        Parcel8 parcel8 = new Parcel8();
+        Wapping wapping = parcel8.wapping(10);
+        System.out.println(wapping.value());
+    }
+
+}
+```
+
+> 一个匿名类，它执行字段初始化。
+
+```java
+import com.sly.demo.thinkinjava.chapter10.parcel4.Destination;
+
+/**
+ * 一个匿名类，它执行字段的初始化
+ * 
+ * @author sly
+ * @time 2019年5月28日
+ */
+public class Parcel9 {
+    /**
+     * “如果定义一个匿名内部类，并且希望它使用一个在其外部定义的对象，那么编译器会要求其参数引用是final的”，
+     *  如果你使用jdk1.8版本不写final是不会报错的，因为编译器默认为final。
+     * @param dest
+     * @return
+     * @author sly
+     * @time 2019年5月30日
+     */
+    public Destination destination(final String dest) {
+        return new Destination() {
+            private String lable = dest;
+            @Override
+            public String readLabel() {
+                return lable;
+            }
+        };
+    }
+    
+    public static void main(String[] args) {
+        Parcel9 parcel9 = new Parcel9();
+        Destination destination = parcel9.destination("海王星");
+        System.out.println(destination.readLabel());
+    }
+}
+```
+
+> 一个匿名类，它通过实例初始化实现构造（匿名类不可能有构造器）。
+
+```java
+/**
+ * 
+ * @author sly
+ * @time 2019年5月30日
+ */
+public abstract class Base {
+    public Base(int i) {
+        System.out.println("Base Constructor i = " + i);
+    }
+
+    abstract void f();
+}
+
+/**
+ * 一个匿名类，它通过实例初始化实现构造器（匿名类不可能有命名构造器）
+ * 
+ * @author sly
+ * @time 2019年5月28日
+ */
+public class Parcel10 {
+
+    /**
+     * 这里的i不需要是final的，因为他是传递给基类使用而不是在匿名内部类中使用。
+     * 
+     * @param i
+     * @return
+     * @author sly
+     * @time 2019年5月30日
+     */
+    public Base getBase(int i) {
+        return new Base(i) {
+
+            @Override
+            void f() {
+                System.out.println("I'am f();");
+            }
+        };
+    }
+
+    public static void main(String[] args) {
+        Parcel10 parcel10 = new Parcel10();
+        Base base = parcel10.getBase(45);
+        base.f();
+    }
+}
+```
+
+### 10.6.1 再访工厂方法
+> 使用内部类实现工厂方法。
+
 
 ## 10.7 嵌套类
 > 

@@ -1,7 +1,7 @@
 package com.sly.demo.thinkinjava.chapter10.dotnew;
 
 /**
- * 
+ * .new
  * @author sly
  * @time 2019年5月28日
  */
