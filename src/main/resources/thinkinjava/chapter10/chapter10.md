@@ -619,6 +619,127 @@ public class Parcel10 {
 ### 10.6.1 再访工厂方法
 > 使用内部类实现工厂方法。
 
+> 可以看到ServiceImpl1、ServiceImpl2构造方法都是私有的，并且没有任何必要去创建作为工厂的具名类。另外你只需要单一的工厂对象，因此本例中它被创建为Service实现中的一个static域。这样的语法更有实际意义。
+
+```java
+/**
+ * service接口
+ * 
+ * @author sly
+ * @time 2019年5月31日
+ */
+public interface Service {
+	/**
+	 * 方法二
+	 * 
+	 * @author sly
+	 * @time 2019年5月31日
+	 */
+	void methodOne();
+
+	/**
+	 * 方法一
+	 * 
+	 * @author sly
+	 * @time 2019年5月31日
+	 */
+	void methodTwo();
+}
+
+/**
+ * service工厂接口
+ * 
+ * @author sly
+ * @time 2019年5月31日
+ */
+public interface ServiceFactory {
+	Service getService();
+}
+
+/**
+ * Service具体实现一
+ * 
+ * @author sly
+ * @time 2019年5月31日
+ */
+public class ServiceImpl1 implements Service {
+
+	private ServiceImpl1() {
+
+	}
+
+	@Override
+	public void methodOne() {
+		System.out.println("ServiceImpl1:methodOne");
+	}
+
+	@Override
+	public void methodTwo() {
+		System.out.println("ServiceImpl1:methodTwo");
+	}
+
+	public static ServiceFactory factory = new ServiceFactory() {
+
+		@Override
+		public Service getService() {
+			return new ServiceImpl1();
+		}
+
+	};
+
+}
+
+/**
+ * Service具体实现二
+ * 
+ * @author sly
+ * @time 2019年5月31日
+ */
+public class ServiceImpl2 implements Service {
+
+	private ServiceImpl2() {
+
+	}
+
+	@Override
+	public void methodOne() {
+		System.out.println("ServiceImpl2:methodOne");
+	}
+
+	@Override
+	public void methodTwo() {
+		System.out.println("ServiceImpl2:methodTwo");
+	}
+
+	public static ServiceFactory factory = new ServiceFactory() {
+
+		@Override
+		public Service getService() {
+			return new ServiceImpl2();
+		}
+	};
+
+}
+
+/**
+ * 
+ * @author sly
+ * @time 2019年5月31日
+ */
+public class Factories {
+	public static void serviceCustomer(ServiceFactory factory) {
+		Service service = factory.getService();
+		service.methodOne();
+		service.methodTwo();
+	}
+	
+	public static void main(String[] args) {
+		serviceCustomer(ServiceImpl1.factory);
+		System.out.println("==========================");
+		serviceCustomer(ServiceImpl2.factory);
+	}
+}
+```
 
 ## 10.7 嵌套类
 > 
