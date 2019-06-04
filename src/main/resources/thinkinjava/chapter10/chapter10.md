@@ -749,7 +749,136 @@ public class Factories {
 > 嵌套类与普通内部类还有一个区别。普通内部类的字段与方法，只能放在类的外部层次上，所有普通内部类不能有static数据和static字段，也不能包含嵌套类。但嵌套类可以包含所有这些东西。
 
 ```java
+import com.sly.demo.thinkinjava.chapter10.parcel4.Contents;
+import com.sly.demo.thinkinjava.chapter10.parcel4.Destination;
 
+/**
+ * 
+ * @author sly
+ * @time 2019年5月31日
+ */
+public class Parcel11 {
+    private static class ParcelContents implements Contents {
+        private int i = 11;
+
+        @Override
+        public int value() {
+            return i;
+        }
+
+    }
+
+    protected static class ParcelDestination implements Destination {
+        private String lable;
+
+        public ParcelDestination(String whereTo) {
+            lable = whereTo;
+        }
+
+        @Override
+        public String readLabel() {
+            return lable;
+        }
+
+        // 嵌套类可以包含其它静态元素
+        static int x = 10;
+
+        public static void f() {
+            System.out.println(x);
+        };
+
+        static class AnotherLevel {
+            static int x = 17;
+
+            public static void f() {
+                System.out.println(x);
+            };
+
+        }
+        
+    }
+    
+    public static Destination destination(String s) {
+        return new ParcelDestination(s);
+    }
+    
+    public static Contents contents() {
+        return new ParcelContents();
+    }
+    
+    public static void main(String[] args) {
+        Destination destination = destination("冥王星");
+        Contents contents = contents();
+        System.out.println(contents.value());
+        System.out.println(destination.readLabel());
+        
+    }
+}
+```
+
+### 10.7.1 接口内部的类
+> 正常情况下，不能再接口内部放置任何代码，但嵌套类可以作为接口的一部分。你放到接口中的任何类都自动是public和static的。因为类是static的，只是将嵌套类置于接口的命名空间内，这并不违反接口的规则。
+
+```java
+/**
+ * 接口嵌套类
+ * 
+ * @author sly
+ * @time 2019年6月4日
+ */
+public interface ClassInInterface {
+    void how();
+    class TestClassInInterface implements ClassInInterface{
+
+        @Override
+        public void how() {
+            System.out.println("TestClassInInterface");
+        }
+        
+        public static void main(String[] args) {
+            System.out.println("TestClassInInterface");
+        }
+    }
+}
+```
+
+### 10.7.2 从多层嵌套类中访问外部类的成员
+> 一个内部类被嵌套多少层并不重要--它能透明地访问所有它所嵌入的外围类的所有成员。
+
+```java
+/**
+ * 
+ * @author sly
+ * @time 2019年6月4日
+ */
+class MNA {
+    private void f() {
+        System.out.println("fff");
+    }
+
+    class A {
+        private void g() {
+            System.out.println("ggggg");
+        }
+
+        public class B {
+            void h() {
+                f();
+                g();
+            }
+        }
+    }
+}
+
+public class MultiNestingAccess {
+    public static void main(String[] args) {
+        MNA mna = new MNA();
+        A mnaa = mna.new A();
+        B mnaab = mnaa.new B();
+
+        mnaab.h();
+    }
+}
 ```
 
 ## 10.8 为什么需要内部类
