@@ -1059,11 +1059,174 @@ public class CallBacks {
 }
 ```
 
+### 10.8.2 内部类与控制框架
+> 应用程序框架就是被设计用来解决某类特定问题的一个类或一组类。
+
+```java
+/**
+ * 
+ * @author sly
+ * @time 2019年6月6日
+ */
+public abstract class Event {
+	private long eventTime;
+	protected final long delayTime;
+
+	public Event(long delayTime) {
+		this.delayTime = delayTime;
+	}
+
+	public void start() {
+		eventTime = System.nanoTime() + delayTime;
+	}
+
+	public boolean ready() {
+		return System.nanoTime() >= eventTime;
+	}
+
+	public abstract void action();
+}
+
+/**
+ * 
+ * @author sly
+ * @time 2019年6月6日
+ */
+public class Controller {
+	private List<Event> eventList = new ArrayList<>();
+	public void addEvent(Event event) {
+		eventList.add(event);
+	}
+	
+	public void run() {
+		while(eventList.size() > 0) {
+			for (Event event : new ArrayList<>(eventList)) {
+				if(event.ready()) {
+					System.out.println(event);
+					event.action();
+					eventList.remove(event);
+				}
+			}
+		}
+	}
+}
+```
+
+> 在目前的设计中你并不知道Event到底做了什么，这正是此设计的关键所在，“使变化的事物与不变的事物相互分离”。
+
+> 这正是内部类要做的事情，内部类允许
+> * 1.控制框架的完整实现是由单个类创建的，从而使得实现细节被封装起来。内部类用来表示解决问题所必须的各种不同的action()。
+> * 2.内部类能够很容易的访问外围类的任意成员，所以可以避免这种实现变得笨拙。如果没有这种能力，代码将变得令人讨厌，以至于你肯定会选择别的方法。
+
+> 例子太长请看代码：com.sly.demo.thinkinjava.chapter10.event
+
 ## 10.9 内部类的继承
-> 
+> 因为内部类的构造器必须连接到指向其外围类对象的引用，所以继承内部类时，事件有点复杂。问题在于那个指向外围类对象的“秘密的”引用必须初始化，而在导出类中不再存在可连接的默认对象。为解决这个问题必须使用特殊的语法来说明它们之间的关联。
+
+```java
+class WithInner {
+	class Inner {
+
+	}
+}
+
+public class InheritInner extends WithInner.Inner {
+	InheritInner(WithInner wi) {
+		wi.super();
+	}
+	
+	public static void main(String[] args) {
+		WithInner inner = new WithInner();
+		InheritInner inheritInner = new InheritInner(inner);
+	}
+}
+```
+
+> 可以看到,InheritInner只继承自内部类，而不是外围类。但是当要生成一个构造器时，默认构造器并不算好，而且不能只是传递一个指向外围类对象的引用。必须在构造器内使用如下语法：
+> enclosingClassReference.super();
 
 ## 10.10 内部类可以被覆盖吗
-> 
+
+```java
+class Egg {
+	private Yolk y;
+
+	protected class Yolk {
+		public Yolk() {
+			System.out.println("Egg.Yolk()");
+		}
+	}
+
+	public Egg() {
+		System.out.println("New Egg()");
+		y = new Yolk();
+	}
+}
+
+public class BigEgg extends Egg{
+	public class Yolk{
+		public Yolk() {
+			System.out.println("BigEgg.Yolk()");
+		}
+	}
+	
+	public static void main(String[] args) {
+		new BigEgg();
+	}
+}
+```
+
+> 当继承了某个外围类时，内部类并没有发生什么特别神奇的变化。这两个内部类是两个独立的实体，各自在自己的命名空间内。当然明确的继承某个内部类也是可以的：
+
+```java
+class Egg2 {
+	protected class Yolk {
+
+		public Yolk() {
+			System.out.println("Egg2.Yolk()");
+		}
+
+		public void f() {
+			System.out.println("Egg2.f()");
+		}
+	}
+
+	private Yolk yolk = new Yolk();
+
+	public Egg2() {
+		System.out.println("New Egg2()");
+	}
+
+	public void insertYolk(Yolk yolk) {
+		this.yolk = yolk;
+	}
+
+	public void g() {
+		yolk.f();
+	}
+}
+
+public class BigEgg2 extends Egg2 {
+	public class Yolk extends Egg2.Yolk {
+		public Yolk() {
+			System.out.println("BigEgg2.Yolk()");
+		}
+
+		public void f() {
+			System.out.println("BigEgg2.f()");
+		}
+	}
+
+	public BigEgg2() {
+		insertYolk(new Yolk());
+	}
+
+	public static void main(String[] args) {
+		BigEgg2 bigEgg2 = new BigEgg2();
+		bigEgg2.g();
+	}
+}
+```
 
 ## 10.11 局部内部类
 > 
