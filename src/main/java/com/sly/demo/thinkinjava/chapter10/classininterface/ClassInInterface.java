@@ -3,7 +3,7 @@ package com.sly.demo.thinkinjava.chapter10.classininterface;
 /**
  * 接口嵌套类
  * 
- * @author sly
+ * @author sly 
  * @time 2019年6月4日
  */
 public interface ClassInInterface {

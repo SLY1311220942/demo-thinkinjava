@@ -5,9 +5,11 @@ interface Incrementable {
 }
 
 class Callee1 implements Incrementable {
+	private int i = 0;
 	@Override
 	public void increment() {
-
+		i ++;
+		System.out.println(i);
 	}
 
 }
@@ -57,6 +59,20 @@ class Caller {
 
 public class CallBacks {
 	public static void main(String[] args) {
+		Callee1 callee1 = new Callee1();
+		Callee2 callee2 = new Callee2();
 		
+		MyIncrement.f(callee2);
+		
+		Caller caller1 = new Caller(callee1);
+		Caller caller2 = new Caller(callee2.getCallBackReference());
+		
+		System.out.println("===========");
+		
+		caller1.go();
+		caller1.go();
+		System.out.println("===========");
+		caller2.go();
+		caller2.go();
 	}
 }

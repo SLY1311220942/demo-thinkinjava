@@ -5,7 +5,7 @@ import com.sly.demo.thinkinjava.chapter10.mna.MNA.A.B;
 
 /**
  * 
- * @author sly
+ * @author sly 
  * @time 2019年6月4日
  */
 class MNA {

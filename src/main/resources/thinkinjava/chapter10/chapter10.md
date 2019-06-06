@@ -882,7 +882,182 @@ public class MultiNestingAccess {
 ```
 
 ## 10.8 为什么需要内部类
-> 
+> 每个内部类都能独立地继承自一个（接口的）实现，所以无论外围类是否已经继承了某个（接口的）实现，对于内部类都没有影响。
+
+> 如果没有内部类提供的、可以继承多个具体的或抽象的类的能力，一些设计与编程问题就难以解决。从这个角度看，内部类使得多重继承的解决方案变得完整。接口解决了部分问题，而内部类有效的实现了“多重继承”。也就是说，内部类允许继承多个非接口类型（类或抽象类）。
+
+```java
+interface A {
+
+}
+
+interface B {
+
+}
+
+class X implements A, B {
+
+}
+
+class Y implements A {
+	B makeB() {
+		return new B() {
+
+		};
+	}
+}
+
+/**
+ * 
+ * @author sly
+ * @time 2019年6月6日
+ */
+public class MultiInterfaces {
+	static void takesA(A a) {
+
+	}
+
+	static void takesB(B b) {
+
+	}
+
+	public static void main(String[] args) {
+		X x = new X();
+		Y y = new Y();
+		takesA(x);
+		takesA(y);
+		takesB(x);
+		takesB(y.makeB());
+	}
+}
+```
+
+> 使用内部类还可以获得其它特性。
+> * 1.内部类可以有多个实例，每个实例都有自己的状态信息，并且与其外围类对象的信息相互独立。
+> * 2.在单个外围类中，可以让多个内部类以不同的方式实现同一个接口，或继承同一个类。
+> * 3.创建内部类对象的时刻并不依赖于外围类对象的创建。
+> * 4.内部类并没有令人疑惑的“is-a”关系，它就是一个独立的实体。
+
+```java
+class D {
+
+}
+
+abstract class E {
+
+}
+
+class Z extends D {
+	E makeE() {
+		return new E() {
+
+		};
+	}
+}
+
+/**
+ * 
+ * @author sly
+ * @time 2019年6月6日
+ */
+public class MultiImplementation {
+	static void takeD(D d) {
+
+	}
+
+	static void takeE(E e) {
+
+	}
+
+	public static void main(String[] args) {
+		Z z = new Z();
+		takeD(z);
+		takeE(z.makeE());
+	}
+}
+```
+
+### 10.8.1 闭包与回调
+> 闭包（closure）是一个可调用的对象，它记录了一些信息，这些信息来自于创建它的作用域。可以看出内部类是面向对象的闭包，因为它不仅包含外围类对象（创建内部类的作用域）的信息。还自动拥有一个指向此外围类对象的引用，在此作用域内，内部类有权操作所以成员，包括private成员。
+
+```java
+interface Incrementable {
+	void increment();
+}
+
+class Callee1 implements Incrementable {
+	private int i = 0;
+	@Override
+	public void increment() {
+		i ++;
+		System.out.println(i);
+	}
+
+}
+
+class MyIncrement {
+	public void increment() {
+		System.out.println("other operation");
+	}
+
+	static void f(MyIncrement myIncrement) {
+		myIncrement.increment();
+	}
+}
+
+class Callee2 extends MyIncrement {
+	private int i = 0;
+
+	public void increment() {
+		super.increment();
+		i++;
+		System.out.println(i);
+	}
+
+	private class Closure implements Incrementable {
+		@Override
+		public void increment() {
+			Callee2.this.increment();
+		}
+	}
+
+	Incrementable getCallBackReference() {
+		return new Closure();
+	}
+}
+
+class Caller {
+	private Incrementable callbackReference;
+
+	Caller(Incrementable incrementable) {
+		callbackReference = incrementable;
+	}
+
+	void go() {
+		callbackReference.increment();
+	}
+}
+
+public class CallBacks {
+	public static void main(String[] args) {
+		Callee1 callee1 = new Callee1();
+		Callee2 callee2 = new Callee2();
+		
+		MyIncrement.f(callee2);
+		
+		Caller caller1 = new Caller(callee1);
+		Caller caller2 = new Caller(callee2.getCallBackReference());
+		
+		System.out.println("===========");
+		
+		caller1.go();
+		caller1.go();
+		System.out.println("===========");
+		caller2.go();
+		caller2.go();
+	}
+}
+```
 
 ## 10.9 内部类的继承
 > 
