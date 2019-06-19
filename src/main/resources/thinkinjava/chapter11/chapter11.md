@@ -89,8 +89,17 @@ result:
 ## 11.10 Map
 > 将对象映射到其它对象的能力是一种解决编程问题的杀手锏。
 
-## 11.11 Queue
+> Map与数组和其它Collection一样，可以很容易的扩展到多维，简而言之就是嵌套。这样可以帮助我们组成强大的数据结构。
 
+## 11.11 Queue
+> 队列是一个典型的先进先出的容器。
+
+### 11.11.1 PriorityQueue
+> 先进先出描述了最典型的队列规则。优先级队列声明下一个弹出的元素是最需要的元素（优先级最高）。
+
+> PriorityQueue调用offer()时对象会在队列里被排序，默认顺序是对象在队列中的自然顺序，但是可以通过提供自己的Comparator来修改这个顺序。PriorityQueue可以确保你调用peek()，poll()和remove()时获取的元素是队列优先级最高的元素。
+
+> PriorityQueue队列是允许重复的。
 
 ## 11.12 Collection和Iterator
 
