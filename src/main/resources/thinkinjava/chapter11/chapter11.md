@@ -102,10 +102,62 @@ result:
 > PriorityQueue队列是允许重复的。
 
 ## 11.12 Collection和Iterator
+> Collection是描述所有序列容器的共性的根接口，它可能会被认为是一个“附属接口”，即因为要表示其它若干个接口的共性而出现的接口。
 
+> Java中迭代器和Collection接口绑定到了一起，因为实现Collection就意味着需要提供iterator()方法。
 
 ## 11.13 Foreach与迭代器
+> 任何数组以及实现了Iterable的类都可以用于foreach语句。
 
+### 11.13.1 适配器方法惯用法
+
+```java
+class ReversibleArrayList<T> extends ArrayList<T> {
+	private static final long serialVersionUID = -4515694757645112979L;
+
+	public ReversibleArrayList(Collection<T> c) {
+		super(c);
+	}
+
+	public Iterable<T> reserved() {
+		return new Iterable<T>() {
+			@Override
+			public Iterator<T> iterator() {
+				return new Iterator<T>() {
+					int current = size() - 1;
+
+					@Override
+					public boolean hasNext() {
+						return current > -1;
+					}
+
+					@Override
+					public T next() {
+						return get(current--);
+					}
+				};
+			}
+		};
+	}
+}
+
+public class AdaptorMethodIdiom {
+
+	public static void main(String[] args) {
+		ReversibleArrayList<String> reversibleArrayList = new ReversibleArrayList<>(
+				Arrays.asList("To be or not to be".split(" ")));
+
+		for (String str : reversibleArrayList) {
+			System.out.print(str + " ");
+		}
+		System.out.println();
+		for (String str : reversibleArrayList.reserved()) {
+			System.out.print(str + " ");
+		}
+		System.out.println();
+	}
+}
+```
 
 ## 11.14 总结
 
