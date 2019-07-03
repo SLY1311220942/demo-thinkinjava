@@ -3,7 +3,7 @@
 
 ## 13.1 不可变String
 
-## 13.2 重载“+”StringBuilder
+## 13.2 重载“+”与StringBuilder
 
 ## 13.3 无意识递归
 
