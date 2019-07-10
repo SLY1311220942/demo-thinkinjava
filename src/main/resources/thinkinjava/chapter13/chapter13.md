@@ -13,9 +13,9 @@
 > 在toString()方法里使用打印this会导致递归调用从而报出异常。这时如果需要获取对象内存地址需要使用Object的toString()方法。
 
 ```java
-	public String toString(){
-		return "toString" + this;
-	}
+public String toString(){
+	return "toString" + this;
+}
 ```
 
 ## 13.4 String上的操作
@@ -30,31 +30,31 @@
 > System.out.format("Row [%d %.1f]\n", x, y);
 
 ```java
-	public static void main(String[] args) {
-		int x = 1;
-		double y = 1.5;
-		System.out.println("Row [" + x + " " + y + "]");
-		System.out.format("Row [%d %.1f]\n", x, y);
-		System.out.printf("Row [%d %.1f]\n", x, y);
-	}
-	
-	Row [1 1.5]
-	Row [1 1.5]
-	Row [1 1.5]
+public static void main(String[] args) {
+	int x = 1;
+	double y = 1.5;
+	System.out.println("Row [" + x + " " + y + "]");
+	System.out.format("Row [%d %.1f]\n", x, y);
+	System.out.printf("Row [%d %.1f]\n", x, y);
+}
+
+Row [1 1.5]
+Row [1 1.5]
+Row [1 1.5]
 ```
 
 ### 13.5.3 Formatter类
 
 ```java
-	public static void main(String[] args) {
-		int x = 1;
-		double y = 1.5;
-		Formatter formatter = new Formatter(System.out);
-		formatter.format("Row [%d %.1f]\n",  x, y);
-		formatter.close();
-	}
-	
-	Row [1 1.5]
+public static void main(String[] args) {
+	int x = 1;
+	double y = 1.5;
+	Formatter formatter = new Formatter(System.out);
+	formatter.format("Row [%d %.1f]\n",  x, y);
+	formatter.close();
+}
+
+Row [1 1.5]
 ```
 
 ### 13.5.4 格式化说明符
@@ -155,29 +155,29 @@
 > 一般来说比起使用功能有限的String类，我们更愿意构造功能强大的正则表达式对象。
 
 ```java
-	@Test
-	public void test01() {
-		Pattern pattern = Pattern.compile("[\\d]");
-		Matcher matcher = pattern.matcher("123456");
-		while(matcher.find()) {
-			System.out.println("match:" + matcher.group() + " at position " + matcher.start() + "-" + (matcher.end()-1));
-		}
+@Test
+public void test01() {
+	Pattern pattern = Pattern.compile("[\\d]");
+	Matcher matcher = pattern.matcher("123456");
+	while(matcher.find()) {
+		System.out.println("match:" + matcher.group() + " at position " + matcher.start() + "-" + (matcher.end()-1));
 	}
-	
-	@Test
-	public void test02() {
-		Pattern pattern = Pattern.compile("[\\d]");
-		String[] split = pattern.split("a1cd5xd");
-		for (String str : split) {
-			System.out.println(str);
-		}
+}
+
+@Test
+public void test02() {
+	Pattern pattern = Pattern.compile("[\\d]");
+	String[] split = pattern.split("a1cd5xd");
+	for (String str : split) {
+		System.out.println(str);
 	}
-	
-	@Test
-	public void test03() {
-		boolean matches = Pattern.matches("[\\d]", "1");
-		System.out.println(matches);
-	}
+}
+
+@Test
+public void test03() {
+	boolean matches = Pattern.matches("[\\d]", "1");
+	System.out.println(matches);
+}
 ```
 
 #### 组（Groups）
@@ -186,24 +186,24 @@
 > A(B(C))D ：组0是ABCD，组1是BC，组2是C
 
 ```java
-	@Test
-	public void test04() {
-		String str = "Twas brilling, and the slithy toves\n" +
-				"Did gyre and gimble in the wabe.\n" +
-				"All mimsy were the borogoves,\n" +
-				"And the mome raths outgrabe.\n\n" +
-				"Beware the Jabberwock, my son,\n" +
-				"The jaws that bite, and shun\n" +
-				"The frumious Bandersnatch.";
-		
-		Matcher matcher = Pattern.compile("(?m)(\\S+)\\s+((\\S+)\\s+(\\S+))$").matcher(str);
-		while(matcher.find()) {
-			for (int i = 0; i < matcher.groupCount(); i++) {
-				System.out.print("[" + matcher.group(i) + "]");
-			}
-			System.out.println();
+@Test
+public void test04() {
+	String str = "Twas brilling, and the slithy toves\n" +
+			"Did gyre and gimble in the wabe.\n" +
+			"All mimsy were the borogoves,\n" +
+			"And the mome raths outgrabe.\n\n" +
+			"Beware the Jabberwock, my son,\n" +
+			"The jaws that bite, and shun\n" +
+			"The frumious Bandersnatch.";
+	
+	Matcher matcher = Pattern.compile("(?m)(\\S+)\\s+((\\S+)\\s+(\\S+))$").matcher(str);
+	while(matcher.find()) {
+		for (int i = 0; i < matcher.groupCount(); i++) {
+			System.out.print("[" + matcher.group(i) + "]");
 		}
+		System.out.println();
 	}
+}
 ```
 
 #### start()与end()
@@ -222,74 +222,74 @@
 * appendTail()：执行一次或多次appendReplacement()后，此方法可以将输入字符余下部分截取出来。
 
 ```java
-	@Test
-	public void test01() {
-		Matcher matcher = Pattern.compile("[\\d]").matcher("asd2sd3f4s5");
-		String replaceFirst = matcher.replaceFirst("数");
-		System.out.println(replaceFirst);
+@Test
+public void test01() {
+	Matcher matcher = Pattern.compile("[\\d]").matcher("asd2sd3f4s5");
+	String replaceFirst = matcher.replaceFirst("数");
+	System.out.println(replaceFirst);
+}
+
+@Test
+public void test02() {
+	Matcher matcher = Pattern.compile("[\\d]").matcher("asd2sd3f4s5");
+	String replaceAll = matcher.replaceAll("数");
+	System.out.println(replaceAll);
+}
+
+@Test
+public void test03() {
+	Matcher matcher = Pattern.compile("[\\d]").matcher("asd2sd3f4s5");
+	StringBuffer sb = new StringBuffer();
+	int count = 0;
+	int total = 3;
+	while (matcher.find() && count < total) {
+		matcher.appendReplacement(sb, "数");
+		count ++;
 	}
-	
-	@Test
-	public void test02() {
-		Matcher matcher = Pattern.compile("[\\d]").matcher("asd2sd3f4s5");
-		String replaceAll = matcher.replaceAll("数");
-		System.out.println(replaceAll);
-	}
-	
-	@Test
-	public void test03() {
-		Matcher matcher = Pattern.compile("[\\d]").matcher("asd2sd3f4s5");
-		StringBuffer sb = new StringBuffer();
-		int count = 0;
-		int total = 3;
-		while (matcher.find() && count < total) {
-			matcher.appendReplacement(sb, "数");
-			count ++;
-		}
-		matcher.appendTail(sb);
-		System.out.println(sb);
-	}
+	matcher.appendTail(sb);
+	System.out.println(sb);
+}
 ```
 
 ### 13.6.7 reset()
 > 通过reset()方法，可以将现有Matcher用于一个新的字符序列。
 
 ```java
-	@Test
-	public void test04() {
-		Matcher matcher = Pattern.compile("[\\d]").matcher("asd2sd3f4s5");
-		while (matcher.find()) {
-			System.out.print(matcher.group() + " ");
-		}
-		System.out.println();
-		matcher.reset("asd6sd7f8s9");
-		while (matcher.find()) {
-			System.out.print(matcher.group() + " ");
-		}
+@Test
+public void test04() {
+	Matcher matcher = Pattern.compile("[\\d]").matcher("asd2sd3f4s5");
+	while (matcher.find()) {
+		System.out.print(matcher.group() + " ");
 	}
+	System.out.println();
+	matcher.reset("asd6sd7f8s9");
+	while (matcher.find()) {
+		System.out.print(matcher.group() + " ");
+	}
+}
 ```
 
 ### 13.6.8 正则表达式与javaI/O
 > 用正则表达式在文件中进行匹配。
 
 ```java
-	@Test
-	public void test01() throws IOException {
-		Matcher matcher = Pattern.compile("[\\d]").matcher("");
-		FileReader fileReader = new FileReader("D:\\test\\iotest.txt");
-		BufferedReader bufferedReader = new BufferedReader(fileReader);
-		String line = "";
-		while((line = bufferedReader.readLine()) != null) {
-			matcher.reset(line);
-			while (matcher.find()) {
-				System.out.print(matcher.group());
-			}
-			System.out.println();
+@Test
+public void test01() throws IOException {
+	Matcher matcher = Pattern.compile("[\\d]").matcher("");
+	FileReader fileReader = new FileReader("D:\\test\\iotest.txt");
+	BufferedReader bufferedReader = new BufferedReader(fileReader);
+	String line = "";
+	while((line = bufferedReader.readLine()) != null) {
+		matcher.reset(line);
+		while (matcher.find()) {
+			System.out.print(matcher.group());
 		}
-		
-		bufferedReader.close();
-		fileReader.close();
+		System.out.println();
 	}
+	
+	bufferedReader.close();
+	fileReader.close();
+}
 ```
 
 ## 13.7 扫描输入

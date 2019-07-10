@@ -29,24 +29,24 @@
 > 如果方法内部抛出了异常，那么方法将在抛出异常的过程中结束。要是不希望方法结束，可以在方法内部设置一个特殊块来捕获异常（关键字try）：
 
 ```java
-	try {  
-		// code that might generate exception  
-	}
+try {  
+	// code that might generate exception  
+}
 ```
 
 ### 12.3.2 异常处理程序
 > 抛出的异常必须在某处得到处理，这个地点就是异常处理程序，针对每个要处理的异常，得准备相应的处理程序（关键字catch）。
 
 ```java
-	try {  
-		// code that might generate exception  
-	} catch(Type1 id1) {
-		// handle exception of type1
-	} catch(Type2 id2) {
-		// handle exception of type2
-	} catch(Type3 id3) {
-		// handle exception of type3
-	}
+try {  
+	// code that might generate exception  
+} catch(Type1 id1) {
+	// handle exception of type1
+} catch(Type2 id2) {
+	// handle exception of type2
+} catch(Type3 id3) {
+	// handle exception of type3
+}
 ```
 
 > 当异常被抛出时，异常处理机制近负责搜寻参数与异常类型相匹配的第一个处理程序。
@@ -72,9 +72,9 @@
 > 异常说明使用了附加关键字throws，后面接一个所有潜在异常类型的列表。
 
 ```java
-	void function1() throws TooBig, TooSmall, DivZero{
-		
-	}
+void function1() throws TooBig, TooSmall, DivZero{
+	
+}
 ```
 
 ## 12.6 捕获所有异常
@@ -87,9 +87,9 @@
 > 有时候希望重新将刚捕获的异常抛出，尤其是使用Exception时。
 
 ```java
-	catch(Exception e){
-		throw e;
-	}
+catch(Exception e){
+	throw e;
+}
 ```
 
 > 捕获异常后再抛出异常，有关原来异常发生点的信息会丢失，剩下的是与新异常抛出点有关的信息。
@@ -100,11 +100,11 @@
 > Throwable的子类构造器可以接收一个cause对象作为参数，这个cause用来表示原始异常。这样把原始异常传递给新异常，即使在当前位置重新抛出了新异常，也能通过这个异常链追踪到异常最初发生的位置。
 
 ```java
-	try {
-		g();
-	} catch (Exception e) {
-		throw new RuntimeException(e);
-	}
+try {
+	g();
+} catch (Exception e) {
+	throw new RuntimeException(e);
+}
 ```
 
 ## 12.7 Java标准异常
@@ -121,17 +121,17 @@
 > 对于有些代码我们希望不管try块是否抛出异常，他们都能得到执行。这时可以在异常处理程序后面加上finally子句。
 
 ```java
-	try {  
-		// code that might generate exception  
-	} catch(Type1 id1) {
-		// handle exception of type1
-	} catch(Type2 id2) {
-		// handle exception of type2
-	} catch(Type3 id3) {
-		// handle exception of type3
-	} finally {
-		// activities that happen every time
-	}
+try {  
+	// code that might generate exception  
+} catch(Type1 id1) {
+	// handle exception of type1
+} catch(Type2 id2) {
+	// handle exception of type2
+} catch(Type3 id3) {
+	// handle exception of type3
+} finally {
+	// activities that happen every time
+}
 ```
 
 ### 12.8.1 finally用来做什么
@@ -144,29 +144,29 @@
 > 遗憾的是，Java的异常实现也有瑕疵。异常作为程序出错的标志，绝不应该被忽略，但它还是可能被轻易的忽略。用某些特殊的方式使用finally子句，就会发生这种情况。
 
 ```java
-	public class LostMessage {
-		void f() throws VeryImportantException {
-			throw new VeryImportantException();
-		}
-		
-		void dispose() throws HoHumException {
-			throw new HoHumException();
-		}
-		
-		
-		public static void main(String[] args) {
+public class LostMessage {
+	void f() throws VeryImportantException {
+		throw new VeryImportantException();
+	}
+	
+	void dispose() throws HoHumException {
+		throw new HoHumException();
+	}
+	
+	
+	public static void main(String[] args) {
+		try {
+			LostMessage lostMessage = new LostMessage();
 			try {
-				LostMessage lostMessage = new LostMessage();
-				try {
-					lostMessage.f();
-				} finally {
-					lostMessage.dispose();
-				}
-			} catch (Exception e) {
-				System.out.println(e);
+				lostMessage.f();
+			} finally {
+				lostMessage.dispose();
 			}
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 	}
+}
 ```
 
 > 输出中可以看到VeryImportantException不见了，它被finally中的HoHumException取代了。这是相当严重的缺陷，因为异常可能会以比例子更微妙和难以察觉的方式完全丢失。
@@ -175,18 +175,18 @@
 > 当覆盖方法时，只能抛出在基类方法的异常说明里列出的那些异常。这个限制的作用是：当基类使用的代码应用到派生类对象的时候，一样能工作，异常也不例外。
 
 ```java
-	public class ParentClass {
-		public void f() throws OneException {
-			throw new OneException();
-		}
+public class ParentClass {
+	public void f() throws OneException {
+		throw new OneException();
 	}
+}
 
-	public class ChildClass extends ParentClass{
-		@Override
-		public void f() throws TwoException  {
-			throw new TwoException();
-		}
+public class ChildClass extends ParentClass{
+	@Override
+	public void f() throws TwoException  {
+		throw new TwoException();
 	}
+}
 ```
 
 > ChildClass编译会报错提示：Exception TwoException is not compatible with throws clause in ParentClass.f()。
@@ -194,10 +194,10 @@
 > 但是子类重写方法可以抛出父类方法抛出异常的导出类
 
 ```java
-	@Override
-	public void f() throws ChildOneException  {
-		throw new ChildOneException();
-	}
+@Override
+public void f() throws ChildOneException  {
+	throw new ChildOneException();
+}
 ```
 
 ## 12.10 构造器
@@ -208,21 +208,21 @@
 > 对于构造阶段可能会抛出异常，并且要求清理的类，最安全的使用方式是使用嵌套try子句：
 
 ```java
-	public class CleanUp {
-		public static void main(String[] args) {
+public class CleanUp {
+	public static void main(String[] args) {
+		try {
+			InputStream in = new FileInputStream("asdasda");
 			try {
-				InputStream in = new FileInputStream("asdasda");
-				try {
-					System.out.println("operate");
-				} finally {
-					System.out.println("finally run");
-					in.close();
-				}
-			} catch (Exception e) {
-				System.out.println("InputStream construction failed");
+				System.out.println("operate");
+			} finally {
+				System.out.println("finally run");
+				in.close();
 			}
+		} catch (Exception e) {
+			System.out.println("InputStream construction failed");
 		}
 	}
+}
 ```
 
 ## 12.11 异常匹配
@@ -242,11 +242,11 @@
 > 可以将“被检查的异常”转换为“不检查的异常”
 
 ```java
-	try {
-		// 
-	} catch (TypeException e){
-		throw new RuntimeException(e);
-	}
+try {
+	// 
+} catch (TypeException e){
+	throw new RuntimeException(e);
+}
 ```
 
 ## 12.13 异常使用指南
