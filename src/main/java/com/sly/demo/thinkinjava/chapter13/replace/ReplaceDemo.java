@@ -1,5 +1,8 @@
 package com.sly.demo.thinkinjava.chapter13.replace;
 
+import java.math.BigDecimal;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,6 +54,63 @@ public class ReplaceDemo {
 		while (matcher.find()) {
 			System.out.print(matcher.group() + " ");
 		}
+	}
+	
+	@Test
+	public void test05() {
+		float a = 1.0f - 0.9f;	
+        float b = 0.9f - 0.8f;	
+        if (a == b) {	
+            System.out.println("true");	
+        } else {	
+            System.out.println("false");	
+        }
+	}
+	
+	@Test
+	public void test06() {
+		Float a = Float.valueOf(1.0f - 0.9f);	
+        Float b = Float.valueOf(0.9f - 0.8f);	
+        if (a.equals(b)) {	
+            System.out.println("true");	
+        } else {	
+            System.out.println("false");	
+        }
+	}
+	
+	@Test
+	public void test07() {
+		String param = null;	
+        switch (param) {	
+            case "null":	
+                System.out.println("null");	
+                break;	
+            default:	
+                System.out.println("default");	
+        }
+	}
+	
+	@Test
+	public void test08() {
+		BigDecimal a = new BigDecimal(0.1);
+		System.out.println(a);
+		BigDecimal b = new BigDecimal("0.1");
+		System.out.println(b);
+	}
+	
+	private final static Lock lock = new ReentrantLock();
+	private boolean tryLock;
+	
+	@Test
+	public void test09() {
+		try {	
+            tryLock = lock.tryLock();
+            System.out.println(tryLock);
+        } catch (Exception e) {	
+            e.printStackTrace();	
+        } finally {	
+            lock.unlock();	
+        }	
 	}
 }
 
