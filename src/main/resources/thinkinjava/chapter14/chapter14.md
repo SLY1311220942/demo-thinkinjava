@@ -108,7 +108,7 @@ public class ClassInitialization {
 	}
 }
 
-result
+result:
 -------------after create InitTable ref------------
 47
 Initializing InitTable
@@ -131,7 +131,39 @@ Initializing InitTable3
 
 > 为了创建一个Class引用，它被限制为某种类型，或该类型的子类型，你需要将通配符和extends关键字结合，创建一个范围：Class<? extends Number>。
 
+> 如果你手头是超类，那编译器只允许你声明超类引用的是“某个类，它是FancyToy的超类”。就像Class<? Super FancyToy>。这看上去有些奇怪，因为getSuperClass返回的是基类（不是接口），并且在编译期就知道它是什么类型了。
+
+```java
+class Toy {
+
+}
+
+class FancyToy extends Toy {
+
+}
+
+public class ToyTest {
+	public static void main(String[] args) throws Exception {
+		Class<FancyToy> ftClass = FancyToy.class;
+		FancyToy fancyToy = ftClass.newInstance();
+		Class<? super FancyToy> up = ftClass.getSuperclass();
+		// 编译不通过
+		// Class<Toy> superclass = ftClass.getSuperclass();
+		Object newInstance = up.newInstance();
+	}
+}
+```
+
+### 14.2.3 新的转型语法
+> Class引用的转型语法，cast()方法。cast()方法接受参数对象，并将其转型为Class引用的类型。
+
 ## 14.3 类型转换前先做检查
+> 已知的几种RTTI形式
+* 1.传统的类型转换。由RTTI确保类型转换的正确性，如果执行了一个错误的类型转换，就会抛出一个ClassCastException异常。
+* 2.代表对象的类型的Class对象。通过查询Class对象可以获取运行时所需的信息。
+* 3.关键字instanceof。它返回一个布尔值，告诉我们对象是不是某个特定类型的实例。
+
+### 14.3.1 使用类字面常量
 
 
 ## 14.4 注册工厂
