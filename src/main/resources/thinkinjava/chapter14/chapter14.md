@@ -164,10 +164,108 @@ public class ToyTest {
 * 3.关键字instanceof。它返回一个布尔值，告诉我们对象是不是某个特定类型的实例。
 
 ### 14.3.1 使用类字面常量
+> Pet.class;
 
+### 14.3.2 动态的instanceof
+> Class对象的isInstance()方法提供了一种动态的检查对象的途径。
+
+### 14.3.3 动态的instanceof
+> Class对象的isAssignableFrom()方法判断是否为某个类的父类。
 
 ## 14.4 注册工厂
+> 说白了就是讲能生成的目标类型统一放到一处管理起来。
 
+```java
+public interface Factory<T> {
+    T create();
+}
+
+class Part {
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
+    static List<Factory<? extends Part>> partFactories = new ArrayList<Factory<? extends Part>>();
+    static {
+        partFactories.add(new FuelFilter.Factory());
+        partFactories.add(new AirFilter.Factory());
+        partFactories.add(new FanBelt.Factory());
+        partFactories.add(new GeneratorBelt.Factory());
+    }
+    
+    private static Random rand = new Random(47);
+    
+    public static Part createRandom() {
+        int n = rand.nextInt(partFactories.size());
+        return partFactories.get(n).create();
+    }
+}
+
+class Filter extends Part {
+
+}
+
+class FuelFilter extends Filter {
+    public static class Factory implements com.sly.demo.thinkinjava.chapter14.registryfactory.Factory<FuelFilter> {
+        @Override
+        public FuelFilter create() {
+            return new FuelFilter();
+        }
+    }
+}
+
+class AirFilter extends Filter {
+    public static class Factory implements com.sly.demo.thinkinjava.chapter14.registryfactory.Factory<AirFilter> {
+        @Override
+        public AirFilter create() {
+            return new AirFilter();
+        }
+    }
+}
+
+class Belt extends Part {
+
+}
+
+class FanBelt extends Belt {
+    public static class Factory implements com.sly.demo.thinkinjava.chapter14.registryfactory.Factory<FanBelt> {
+        @Override
+        public FanBelt create() {
+            return new FanBelt();
+        }
+    }
+}
+
+class GeneratorBelt extends Belt {
+    public static class Factory implements com.sly.demo.thinkinjava.chapter14.registryfactory.Factory<GeneratorBelt> {
+        @Override
+        public GeneratorBelt create() {
+            return new GeneratorBelt();
+        }
+    }
+}
+
+public class RegistryFactory {
+    public static void main(String[] args) {
+        for (int i = 0; i < 10; i++) {
+            System.out.println(Part.createRandom());
+        }
+    }
+}
+
+result:
+FanBelt
+AirFilter
+FanBelt
+FuelFilter
+FuelFilter
+FanBelt
+FuelFilter
+AirFilter
+FanBelt
+FanBelt
+```
 
 ## 14.5 instanceof与Class的等价性
 

@@ -16,5 +16,7 @@ public class ToyTest {
 		// 编译不通过
 		// Class<Toy> superclass = ftClass.getSuperclass();
 		Object newInstance = up.newInstance();
+		
+		
 	}
 }
