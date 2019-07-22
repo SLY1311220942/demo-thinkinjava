@@ -268,13 +268,69 @@ FanBelt
 ```
 
 ## 14.5 instanceof与Class的等价性
+```java
+class Base {
+	
+}
 
+class Drived extends Base {
+	
+}
+
+public class InstanceofClass {
+	static void test(Object x) {
+		System.out.println("Test x of type:" + x.getClass());
+		System.out.println("x instanceof Base:" + (x instanceof Base));
+		System.out.println("x instanceof Drived:" + (x instanceof Drived));
+		System.out.println("Base.isInstance(x):" + Base.class.isInstance(x));
+		System.out.println("Drived.isInstance(x):" + Drived.class.isInstance(x));
+		System.out.println("x.getClass() == Base.class:" + (x.getClass() == Base.class));
+		System.out.println("x.getClass() == Drived.class:" + (x.getClass() == Drived.class));
+		System.out.println("x.getClass().equals(Base.class):" + (x.getClass().equals(Base.class)));
+		System.out.println("x.getClass().equals(Drived.class):" + (x.getClass().equals(Drived.class)));
+	}
+	
+	public static void main(String[] args) {
+		test(new Base());
+		test(new Drived());
+	}
+}
+
+result:
+Test x of type:class com.sly.demo.thinkinjava.chapter14.instclass.Base
+x instanceof Base:true
+x instanceof Drived:false
+Base.isInstance(x):true
+Drived.isInstance(x):false
+x.getClass() == Base.class:true
+x.getClass() == Drived.class:false
+x.getClass().equals(Base.class):true
+x.getClass().equals(Drived.class):false
+Test x of type:class com.sly.demo.thinkinjava.chapter14.instclass.Drived
+x instanceof Base:true
+x instanceof Drived:true
+Base.isInstance(x):true
+Drived.isInstance(x):true
+x.getClass() == Base.class:false
+x.getClass() == Drived.class:true
+x.getClass().equals(Base.class):false
+x.getClass().equals(Drived.class):true
+```
+
+> test()使用两种instanceof来执行类型检查，获取Class引用后用==和equals()来检查对象是否相等，生成的结果使人放心instanceof()和isInstance()结果相同，==和equals()也一样。但是instanceof保留了类型概念，但是==和equals就没有类型概念。
 
 ## 14.6 反射：运行时的类信息
 
 
-## 14.7 动态代理
+### 14.6.1 类方法提取器
+> 通常你不需要直接使用反射工具，但是它们在你需要创建更加动态的代码时会有用。
 
+> Class的getMethods()和getContructors()方法分别返回Method对象的数组和Constructor对象的数组。
+
+## 14.7 动态代理
+> 代理是基本的设计模式之一，它是你为了提供额外的或不同的操作，而插入的用来代替“实际”对象的对象。这些操作通常涉及与“实际”对象通讯，因此代理通常充当中间人的角色。
+
+> Java的动态代理比代理的思想更向前迈进了一步，因为它们可以动态的创建代理并动态的处理对所代理方法的调用。在动态代理上所做的所有调用都会被重定向到单一的调用处理器上，它的工作是揭示调用的类型并确定相应的对策。
 
 ## 14.8 空对象
 
