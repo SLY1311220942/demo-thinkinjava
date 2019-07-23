@@ -332,6 +332,53 @@ x.getClass().equals(Drived.class):true
 
 > Java的动态代理比代理的思想更向前迈进了一步，因为它们可以动态的创建代理并动态的处理对所代理方法的调用。在动态代理上所做的所有调用都会被重定向到单一的调用处理器上，它的工作是揭示调用的类型并确定相应的对策。
 
+> 通过调用静态方法Proxy.newProxyInstance()可以创建动态代理，这个方法需要得到一个类加载器（你通常可以从已经加载的对象获取其类加载器，然后传递给它），一个你希望该代理实现的接口列表（不是类或抽象类），以及InvocationHandler的一个实现。
+
+```java
+class DynamicProxyHandler implements InvocationHandler {
+	private Object proxied;
+
+	public DynamicProxyHandler(Object proxied) {
+		this.proxied = proxied;
+	}
+
+	@Override
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		System.out.println("**** proxy:" + proxy.getClass() + " method:" + method + " args:" + args);
+		if(args != null) {
+			for (Object arg : args) {
+				System.out.println("   " + arg);
+			}
+		}
+		return method.invoke(proxied, args);
+	}
+
+}
+
+public class SimpleDynamicProxyDemo {
+	public static void customer(Interface iface) {
+		iface.doSomthing();
+		iface.somthingElse("bonobo");
+	}
+	
+	public static void main(String[] args) {
+		RealObject real = new RealObject();
+		customer(real);
+		Interface proxy = (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(), new Class[]{Interface.class}, new DynamicProxyHandler(real));
+		customer(proxy);
+	}
+}
+
+result:
+doSomthing
+somthingElse bonobo
+**** proxy:class com.sly.demo.thinkinjava.chapter14.proxy.$Proxy0 method:public abstract void com.sly.demo.thinkinjava.chapter14.proxy.Interface.doSomthing() args:null
+doSomthing
+**** proxy:class com.sly.demo.thinkinjava.chapter14.proxy.$Proxy0 method:public abstract void com.sly.demo.thinkinjava.chapter14.proxy.Interface.somthingElse(java.lang.String) args:[Ljava.lang.Object;@6bc7c054
+   bonobo
+somthingElse bonobo
+```
+
 ## 14.8 空对象
 
 
