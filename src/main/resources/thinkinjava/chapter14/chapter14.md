@@ -380,10 +380,262 @@ somthingElse bonobo
 ```
 
 ## 14.8 空对象
+```java
+public interface Null {
 
+}
+
+public class Person {
+	public final String first;
+	public final String last;
+	public final String address;
+
+	public Person(String first, String last, String address) {
+		this.first = first;
+		this.last = last;
+		this.address = address;
+	}
+	
+	@Override
+	public String toString() {
+		return "Person: " + first + " " + last + " " + address;
+	}
+	
+	public static class NullPerson extends Person implements Null{
+
+		private NullPerson() {
+			super("None", "None", "None");
+		}
+		
+		@Override
+		public String toString() {
+			return "NullPerson";
+		}
+	}
+	
+	public static final Person NULL = new NullPerson();
+}
+
+public class Position {
+	private String title;
+	private Person person;
+	
+	public Position(String jobTitle,Person employee) {
+		this.title = jobTitle;
+		this.person = employee;
+		if(person == null) {
+			this.person = Person.NULL;
+		}
+	}
+	
+	public Position(String jobTitle) {
+		this.title = jobTitle;
+		this.person = Person.NULL;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Person getPerson() {
+		return person;
+	}
+
+	public void setPerson(Person person) {
+		this.person = person;
+		if(person == null) {
+			this.person = Person.NULL;
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return "Position: " + title + " " + person;
+	}
+	
+}
+
+public class Staff extends ArrayList<Position> {
+
+	private static final long serialVersionUID = 1L;
+
+	public void add(String title,Person person) {
+		add(new Position(title, person));
+	}
+	
+	public void add(String...titles) {
+		for (String title : titles) {
+			add(new Position(title));
+		}
+	}
+	
+	public Staff(String...titles) {
+		add(titles);
+	}
+	
+	public boolean positionAvailable(String title) {
+		for (Position position : this) {
+			if(position.getTitle().equals(title) && position.getPerson() == Person.NULL) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void fillPosition(String title,Person hire) {
+		for (Position position : this) {
+			if(position.getTitle().equals(title) && position.getPerson() == Person.NULL) {
+				position.setPerson(hire);
+				return ;
+			}
+		}
+		throw new RuntimeException("Position:" + title + " not avaliable");
+	}
+	
+	public static void main(String[] args) {
+		Staff staff = new Staff("Persident","CTO","Marketing Manager","Product Manager","Project Lead",
+				"Software Engineer","Software Engineer","Software Engineer","Software Engineer",
+				"Test Engineer","Technical Writer");
+		staff.fillPosition("Persident", new Person("Me","Last","The top lonely At"));
+		staff.fillPosition("Project Lead", new Person("Janet","Planner","The Burbs"));
+		if(staff.positionAvailable("Software Engineer")) {
+			staff.fillPosition("Software Engineer", new Person("Bob","Coder","Bright Light City"));
+		}
+		System.out.println(staff);
+	}
+}
+
+result:
+[
+	Position: Persident Person: Me Last The top lonely At, 
+	Position: CTO NullPerson, 
+	Position: Marketing Manager NullPerson, 
+	Position: Product Manager NullPerson, 
+	Position: Project Lead Person: Janet Planner The Burbs, 
+	Position: Software Engineer Person: Bob Coder Bright Light City, 
+	Position: Software Engineer NullPerson, 
+	Position: Software Engineer NullPerson, 
+	Position: Software Engineer NullPerson, 
+	Position: Test Engineer NullPerson, 
+	Position: Technical Writer NullPerson
+]
+
+```
+
+我觉得上面这个结构可以用来做点什么，但是还没有想到比较好的应用场景。
+
+
+下面是一种命令模式类型
+
+```java
+public interface Operation {
+	String description();
+	void command();
+}
+
+public interface Robot {
+	String name();
+	String model();
+	List<Operation> Operations();
+	
+	class Test {
+		public static void test(Robot r) {
+			if(r instanceof Null) {
+				System.out.println("[Null Robot]");
+			}
+			System.out.println("Robot name: " + r.name());
+			System.out.println("Robot model: " + r.model());
+			for (Operation operation : r.Operations()) {
+				System.out.println(operation.description());
+				operation.command();
+			}
+		}
+	}
+}
+
+public class SnowRemoveRobot implements Robot{
+	private String name;
+	
+	public SnowRemoveRobot(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String name() {
+		return name;
+	}
+
+	@Override
+	public String model() {
+		return "SnowRobot Series 11";
+	}
+
+	@Override
+	public List<Operation> Operations() {
+		
+		return Arrays.asList(
+			new Operation() {
+				@Override
+				public String description() {
+					return name + " can shovel snow";
+				}
+				@Override
+				public void command() {
+					System.out.println(name + " shoveling snow");
+				}
+			},
+			new Operation() {
+				@Override
+				public String description() {
+					return name + " can chip ice";
+				}
+				@Override
+				public void command() {
+					System.out.println(name + " chipping ice");
+				}
+			},
+			new Operation() {
+				@Override
+				public String description() {
+					return name + " can clear the roof";
+				}
+				@Override
+				public void command() {
+					System.out.println(name + " clearing roof");
+				}
+			}
+		);
+	}
+	
+	public static void main(String[] args) {
+		Robot.Test.test(new SnowRemoveRobot("Slusher"));
+	}
+}
+
+result:
+Robot name: Slusher
+Robot model: SnowRobot Series 11
+Slusher can shovel snow
+Slusher shoveling snow
+Slusher can chip ice
+Slusher chipping ice
+Slusher can clear the roof
+Slusher clearing roof
+```
+
+### 14.8.1 模拟对象与桩
+> 空对象的逻辑变体是模拟对象与桩。与空对象一样，它们都表示在最终的程序中所使用的“实际”对象。但是，模拟对象和桩都只是假扮可以传递实际信息的存活对象，而不是像空对象那样可以成为null的一种更加智能的替代物。
+
+> 模拟对象和桩之间的差异在于程度不同。模拟对象往往是轻量级和自测级，通常很多模拟对象被创建出来是为了处理各种不同的测试情况。桩只是返回桩数据，它通常是重量级的，并且经常在测试之间被复用。桩可以根据它们被调用的方式，通过配置进行修改，因此桩是一种复杂对象，它要做很多事。
 
 ## 14.9 接口与类型信息
+> interface关键字的一个重要的目标就是允许程序员隔离构件，进而降低耦合性。
 
+> 对域来说没有任何方式可以阻止反射到达并调用那些非公共访问权限的方法，即便是private域。但是final域在遭遇修改时是安全的。运行时系统会在不抛出任何异常的情况下接受任何修改常识，但实际上不会发生任何修改（使用1.8版本压根就不让编译通过）。
 
 ## 14.10 总结
 
