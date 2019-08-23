@@ -13,7 +13,7 @@
 > 这个概念称为元组，它是将一组对象打包存储于其中一个单一对象。这个容器运行读取其中的元素，但不允许向其中放入新对象（这个概念也被称为数据传送对象或信使）。
 
 ### 15.2.1 一个堆栈类
-```
+```java
 public class LinkedStack<T> {
 	private static class Node<U> {
 		U item;
@@ -61,6 +61,56 @@ public class LinkedStack<T> {
 
 
 ## 15.3 泛型接口
+> 泛型也可用于接口。例如生成器，这是一种专门创建对象的类。实际上，这是工厂设计模式的一种应用。
+
+```java
+public class CoffeeGenerator implements Generator<Coffee>, Iterable<Coffee> {
+	private Class[] types = { Latter.class, Mocha.class, Cappuccino.class, Americano.class, Breve.class };
+
+	private Random random = new Random(47);
+
+	private int size = 0;
+
+	public CoffeeGenerator() {
+	}
+
+	public CoffeeGenerator(int size) {
+		this.size = size;
+	}
+
+	@Override
+	public Iterator<Coffee> iterator() {
+		return new CoffeeIterator();
+	}
+
+	@Override
+	public Coffee next() {
+		try {
+			return (Coffee) types[random.nextInt(types.length)].newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	class CoffeeIterator implements Iterator<Coffee> {
+		int count = size;
+
+		@Override
+		public boolean hasNext() {
+
+			return count > 0;
+		}
+
+		@Override
+		public Coffee next() {
+			count--;
+			return CoffeeGenerator.this.next();
+		}
+
+	}
+
+}
+```
 
 ## 15.4 泛型方法
 
