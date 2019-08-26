@@ -113,9 +113,79 @@ public class CoffeeGenerator implements Generator<Coffee>, Iterable<Coffee> {
 ```
 
 ## 15.4 泛型方法
+> 泛型也可以用在方法上。定义泛型方法只需要将泛型参数列表置于返回值之前。
+
+```
+public class GenericMethod {
+    public <T> void f(T t) {
+        System.out.println(t.getClass().getSimpleName());
+    }
+    
+    
+    public static void main(String[] args) {
+        GenericMethod genericMethod = new GenericMethod();
+        genericMethod.f(1);
+        genericMethod.f("");
+        genericMethod.f('1');
+        genericMethod.f(true);
+    }
+}
+
+result:
+Integer
+String
+Character
+Boolean
+```
+
 
 ### 15.4.1 杠杆利用类型推断
-> 只有在赋值时类型推断才有效。
+> 这种情况在1.8里已经没有了。应该是已经实现了根据定义来推断类型。
+
+```
+Map<String, List<? extends PetTest>> map = new HashMap<String, List<? extends PetTest>>();
+```
+
+> 只有在赋值时类型推断才有效。这一条在1.8里同样不适用了。
+
+```
+public void f2(Map<String, List<? extends PetTest>> map) {
+        
+}
+
+public static <K,V> Map<K,V> map(){
+    //return new HashMap<K,V>();
+    return new HashMap<>();
+}
+
+//这行不报错
+genericMethod.f2(GenericMethod.map());
+```
+
+> 换句话说这个当初令作者吐槽的问题已经解决了。
+
+### 15.4.2 可变参数的泛型方法
+> 常见于参数为list的，必须写在方法最后，且一个方法只能有一个。
+
+```
+public void f3(String...names) {
+    for (String name : names) {
+        System.out.println(name);
+    }
+}
+```
+
+### 15.4.3 用于Generator的泛型方法
+> 利用生成器我么可以很方便的填充一个Collection。
+
+### 15.4.4 一个通用的Generator
+> 默认调用无参构造方法来生成对象，这也就是为什么创建一个类最好有无参构造方法的原因，如果没有很多框架或者工具就没法用了，应为他们new对象一般使用默认构造方法。
+
+### 15.4.5 简化元组的使用
+> 就是利用重载多写几个。
+
+### 15.4.6 一个实用的Set类
+> 用来做集合相关操作，相加，相交，相减...
 
 ## 15.5 匿名内部类
 
