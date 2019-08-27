@@ -13,9 +13,9 @@ public class TwoTuple<A, B> {
 		first = a;
 		second = b;
 	}
-	
+
 	@Override
-		public String toString() {
-			return "first:" + first + " second:" + second;
-		}
+	public String toString() {
+		return "first:" + first + " second:" + second;
+	}
 }

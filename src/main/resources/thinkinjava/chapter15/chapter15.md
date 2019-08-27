@@ -191,11 +191,48 @@ public void f3(String...names) {
 > 泛型可以用于内部类以及匿名内部类。
 
 ## 15.6 构建复杂模型
-> 
+> 泛型的一个重要好处是能够简单而安全的创建复杂的模型，例如我们可以简单的创建list元组。
+
+```
+public class TupleList<A,B,C,D> extends ArrayList<FourTuple<A,B,C,D>>{
+	public static void main(String[] args) {
+		TupleList<Vehicle,Amphibian,String,Integer> tl = new TupleList<Vehicle,Amphibian,String,Integer>();
+		tl.add(TupleTest.h());
+		tl.add(TupleTest.h());
+		for(FourTuple<A,B,C,D> i:tl){
+			System.out.println(i);
+		}
+	}
+}
+```
 
 ## 15.7 擦除神秘之处
 
+### 15.7.1 C++方式
+```
+public static void main(String[] args) {
+	Class c1 = new ArrayList<Integer>().getClass();
+	Class c2 = new ArrayList<String>().getClass();
+	System.out.println(c1 == c2);
+}
+
+result:
+true
+```
+
+> 根据jdk文档的描述，Class.getTypeParameters()将“返回一个TypeVariable对象数组，表示有泛型声明所声明的参数”。但是实际上你能发现的只有用作参数占位符的标识符。
+
+> 在泛型代码内部，无法获得任何有关泛型参数类型的信息。
+
+> Java泛型是使用擦除来实现的，这意味着当你使用泛型时，任何具体的类型信息都被擦除了，你唯一知道的就是你在使用一个对象。
+
+> 为了解决类型被擦除导致一些操作无法执行，可以给泛型定义边界例如：Manipulator<T extends HasF>。泛型参数将擦除到它遇到的第一个边界。
+
+### 15.7.2 迁移兼容性
+> 
+
 ## 15.8 擦除的补偿
+> 
 
 ## 15.9 边界
 
