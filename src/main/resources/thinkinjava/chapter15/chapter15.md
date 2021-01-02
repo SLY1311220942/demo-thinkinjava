@@ -115,7 +115,7 @@ public class CoffeeGenerator implements Generator<Coffee>, Iterable<Coffee> {
 ## 15.4 泛型方法
 > 泛型也可以用在方法上。定义泛型方法只需要将泛型参数列表置于返回值之前。
 
-```
+```java
 public class GenericMethod {
     public <T> void f(T t) {
         System.out.println(t.getClass().getSimpleName());
@@ -142,13 +142,13 @@ Boolean
 ### 15.4.1 杠杆利用类型推断
 > 这种情况在1.8里已经没有了。应该是已经实现了根据定义来推断类型。
 
-```
+```java
 Map<String, List<? extends PetTest>> map = new HashMap<String, List<? extends PetTest>>();
 ```
 
 > 只有在赋值时类型推断才有效。这一条在1.8里同样不适用了。
 
-```
+```java
 public void f2(Map<String, List<? extends PetTest>> map) {
         
 }
@@ -167,7 +167,7 @@ genericMethod.f2(GenericMethod.map());
 ### 15.4.2 可变参数的泛型方法
 > 常见于参数为list的，必须写在方法最后，且一个方法只能有一个。
 
-```
+```java
 public void f3(String...names) {
     for (String name : names) {
         System.out.println(name);
@@ -193,7 +193,7 @@ public void f3(String...names) {
 ## 15.6 构建复杂模型
 > 泛型的一个重要好处是能够简单而安全的创建复杂的模型，例如我们可以简单的创建list元组。
 
-```
+```java
 public class TupleList<A,B,C,D> extends ArrayList<FourTuple<A,B,C,D>>{
 	public static void main(String[] args) {
 		TupleList<Vehicle,Amphibian,String,Integer> tl = new TupleList<Vehicle,Amphibian,String,Integer>();
@@ -209,7 +209,7 @@ public class TupleList<A,B,C,D> extends ArrayList<FourTuple<A,B,C,D>>{
 ## 15.7 擦除的神秘之处
 
 ### 15.7.1 C++方式
-```
+```java
 public static void main(String[] args) {
 	Class c1 = new ArrayList<Integer>().getClass();
 	Class c2 = new ArrayList<String>().getClass();
@@ -236,7 +236,7 @@ true
 
 ### 15.7.4 边界处的动作
 > 因为有了擦除，泛型最令人困惑的一个方面是：可以表示没有任何意义的事务。
-```
+```java
 public class ArrayMaker<T> {
 	private Class<T> kind;
 
