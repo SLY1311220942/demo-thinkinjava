@@ -236,6 +236,29 @@ true
 
 ### 15.7.4 边界处的动作
 > 因为有了擦除，泛型最令人困惑的一个方面是：可以表示没有任何意义的事务。
+```
+public class ArrayMaker<T> {
+	private Class<T> kind;
+
+	public ArrayMaker(Class<T> kind) {
+		this.kind = kind;
+	}
+
+	T[] create(int size) {
+		return (T[]) Array.newInstance(kind, size);
+	}
+
+	public static void main(String[] args) {
+		ArrayMaker<String> stringMaker = new ArrayMaker<>(String.class);
+		String[] stringArray = stringMaker.create(9);
+		System.out.println(Arrays.toString(stringArray));
+	}
+}
+
+[null, null, null, null, null, null, null, null, null]
+```
+> 即使kind被存储为Class<T>，擦除也意味它实际被存储为Class，没有任何参数。因此Array.newInstance()实际上并未拥有kind所蕴含的类信息，因此不会产生具体的结果。
+
 
 ## 15.8 擦除的补偿
 > 
